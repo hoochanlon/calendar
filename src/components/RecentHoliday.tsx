@@ -86,10 +86,10 @@ const RecentHoliday = () => {
         )}
       </div>
       <button
-        className='flex items-center justify-center w-6 h-6 transition-all duration-200 bg-white border border-transparent rounded cursor-pointer dark:bg-zinc-200 md:rounded-lg md:h-8 md:w-8 hover:border-gray-600'
+        className='flex items-center justify-center w-6 h-6 transition-all duration-200 bg-white border border-gray-300 rounded cursor-pointer dark:bg-zinc-700 dark:border-zinc-600 md:rounded-lg md:h-8 md:w-8 hover:border-gray-600 dark:hover:border-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-600'
         onClick={openShareModal}
       >
-        <ShareExport className='w-4 h-4 md:h-5 md:w-5' />
+        <ShareExport className='w-4 h-4 md:h-5 md:w-5 text-gray-700 dark:text-zinc-200' />
       </button>
     </div>
   );
