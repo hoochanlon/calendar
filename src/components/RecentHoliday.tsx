@@ -5,11 +5,13 @@ import useNextHoliday from '@/hooks/useRecentHoliday';
 import { useSelectedDate } from '@/hooks/useSelectedDate';
 import { useTranslation } from 'react-i18next';
 import { holidayDetails } from '@/configs/holidays';
+import { useHoliday } from '@/contexts/HolidayContext';
 
 const RecentHoliday = () => {
   const { today, setCurrentMonth, setCurrentYear } = useCalendar();
   const { setSelectedDate } = useSelectedDate();
-  const recentHoliday = useNextHoliday(today);
+  const { holidays } = useHoliday();
+  const recentHoliday = useNextHoliday(today, holidays);
   const { openShareModal } = useShareModal();
   const {  i18n } = useTranslation();
   

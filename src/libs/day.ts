@@ -1,4 +1,4 @@
-import { DAY_TYPE } from '@/configs/holidays';
+import { DAY_TYPE, HOLIDAY } from '@/configs/holidays';
 import { Day } from '@/interfaces/day';
 import {
   getFestivals,
@@ -30,16 +30,25 @@ export const getBadgeText = (day: Day, customBadge?: string) => {
   return '';
 };
 
-export const generateDay = (date: Date, range?: [Date, Date]): Day => {
+export const generateDay = (
+  date: Date,
+  holidayData: {
+    holidays: Map<string, HOLIDAY>;
+    restDays: Map<string, HOLIDAY>;
+    workdays: Map<string, HOLIDAY>;
+  },
+  range?: [Date, Date],
+  language: string = 'zh'
+): Day => {
   const currentDate = new Date();
 
   const isWeekend = isWeekendFunc(date);
-  const holiday = getHoliday(date);
-  const workDay = getWorkday(date);
-  const restDay = getRestDay(date);
-  const lunarDate = getLunarDate(date);
-  const solarTerm = getSolarTerm(date);
-  const festivals = getFestivals(date);
+  const holiday = getHoliday(date, holidayData.holidays);
+  const workDay = getWorkday(date, holidayData.workdays);
+  const restDay = getRestDay(date, holidayData.restDays);
+  const lunarDate = getLunarDate(date, language);
+  const solarTerm = getSolarTerm(date, language);
+  const festivals = getFestivals(date, language);
 
   const isHoliday = holiday !== undefined;
   const isRestDay = isHoliday || restDay !== undefined;

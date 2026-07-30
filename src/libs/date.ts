@@ -1,9 +1,6 @@
 import {
   HOLIDAY,
   holidayDetails,
-  holidays,
-  restDays,
-  workdays,
 } from '@/configs/holidays';
 import { FirstDayOfWeek } from '@/hooks/usePreference';
 import dayjs from 'dayjs';
@@ -21,25 +18,39 @@ export const getPercentageOfYear = (date: Date): number => {
   return Math.round(percentage * 100) / 100; // 返回百分比，保留两位小数
 };
 
-export const getWorkday = (date: Date) => {
+export const getWorkday = (date: Date, workdays: Map<string, HOLIDAY>) => {
   const dateStr = dayjs(date).format('YYYY-MM-DD');
   const holiday = workdays.get(dateStr);
   return holiday;
 };
 
-export const getSolarTerm = (date: Date) => {
+export const getSolarTerm = (date: Date, language: string = 'zh') => {
+  // 设置语言
+  if (language.startsWith('en')) {
+    I18n.setLanguage('en');
+  } else {
+    I18n.setLanguage('zh');
+  }
+  
   const lunarDate = Lunar.fromDate(date);
   const solarTerm = lunarDate.getJieQi();
   return solarTerm;
 };
 
-export const getRestDay = (date: Date) => {
+export const getRestDay = (date: Date, restDays: Map<string, HOLIDAY>) => {
   const dateStr = dayjs(date).format('YYYY-MM-DD');
   const holiday = restDays.get(dateStr);
   return holiday;
 };
 
-export const getFestivals = (date: Date) => {
+export const getFestivals = (date: Date, language: string = 'zh') => {
+  // 设置语言
+  if (language.startsWith('en')) {
+    I18n.setLanguage('en');
+  } else {
+    I18n.setLanguage('zh');
+  }
+  
   const solarDate = Solar.fromDate(date);
   const lunarDate = Lunar.fromDate(date);
 
@@ -51,7 +62,7 @@ export const getFestivals = (date: Date) => {
   return festival;
 };
 
-export const getHoliday = (date: Date) => {
+export const getHoliday = (date: Date, holidays: Map<string, HOLIDAY>) => {
   const dateStr = dayjs(date).format('YYYY-MM-DD');
   const holiday = holidays.get(dateStr);
   return holiday;
@@ -63,7 +74,7 @@ export type HolidaySelect = {
   date: string;
 };
 
-export const getHolidays = (): HolidaySelect[] => {
+export const getHolidays = (holidays: Map<string, HOLIDAY>): HolidaySelect[] => {
   const result = Array.from(holidays).map(([date, item]) => ({
     value: item,
     label: holidayDetails[item].chinese,
@@ -72,16 +83,56 @@ export const getHolidays = (): HolidaySelect[] => {
   return result;
 };
 
-export const getLunarDate = (date: Date) => {
+// 将农历中文日期转换为英文
+const convertLunarDateToEnglish = (chineseDate: string): string => {
+  // 农历数字映射
+  const numberMap: Record<string, string> = {
+    '初一': '1st', '初二': '2nd', '初三': '3rd', '初四': '4th', '初五': '5th',
+    '初六': '6th', '初七': '7th', '初八': '8th', '初九': '9th', '初十': '10th',
+    '十一': '11th', '十二': '12th', '十三': '13th', '十四': '14th', '十五': '15th',
+    '十六': '16th', '十七': '17th', '十八': '18th', '十九': '19th', '二十': '20th',
+    '廿一': '21st', '廿二': '22nd', '廿三': '23rd', '廿四': '24th', '廿五': '25th',
+    '廿六': '26th', '廿七': '27th', '廿八': '28th', '廿九': '29th', '三十': '30th',
+  };
+
+  // 月份映射
+  const monthMap: Record<string, string> = {
+    '正月': 'Jan', '二月': 'Feb', '三月': 'Mar', '四月': 'Apr', '五月': 'May', '六月': 'Jun',
+    '七月': 'Jul', '八月': 'Aug', '九月': 'Sep', '十月': 'Oct', '冬月': 'Nov', '腊月': 'Dec',
+  };
+
+  // 检查是否是月份格式（如"正月"）
+  if (chineseDate.endsWith('月')) {
+    return monthMap[chineseDate] || chineseDate;
+  }
+
+  // 返回对应的英文日期
+  return numberMap[chineseDate] || chineseDate;
+};
+
+export const getLunarDate = (date: Date, language: string = 'zh') => {
+  // 设置 lunar-typescript 库的语言
+  if (language.startsWith('en')) {
+    I18n.setLanguage('en');
+  } else {
+    I18n.setLanguage('zh');
+  }
+  
   const lunarDate = Lunar.fromDate(date);
 
   if (lunarDate.getDay() === 1) {
-    return `${lunarDate.getMonthInChinese()}月`;
+    const monthChinese = `${lunarDate.getMonthInChinese()}月`;
+    if (language.startsWith('en')) {
+      return convertLunarDateToEnglish(monthChinese);
+    }
+    return monthChinese;
   }
 
-  console.log('lunarDate', lunarDate.getMonthInChinese(), I18n.getLanguage());
-
-  return lunarDate.getDayInChinese();
+  const dayChinese = lunarDate.getDayInChinese();
+  if (language.startsWith('en')) {
+    return convertLunarDateToEnglish(dayChinese);
+  }
+  return dayChinese;
 };
 
 export const generateDateList = (

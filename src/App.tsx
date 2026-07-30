@@ -11,6 +11,7 @@ import { Footer } from './views/Footer';
 import { usePreference } from './hooks/usePreference';
 import clsxm from './libs/clsxm';
 import FullCalendar from './views/FullCalendar';
+import { HolidayProvider } from './contexts/HolidayContext';
 
 dayjs.extend(weekOfYear);
 
@@ -27,26 +28,28 @@ function App() {
 
   return (
     <GTMProvider state={gtmParams}>
-      <ShareModal />
-      <div className='flex justify-center items-center p-4 w-full min-h-screen md:p-20 bg-slate-200 dark:bg-black/80'>
-        <div className='flex flex-col gap-3 max-md:w-full'>
-          <div
-            className={clsxm(
-              'flex overflow-hidden flex-col gap-2 w-full bg-white rounded-lg dark:bg-zinc-800 md:w-fit h-fit',
-              isHorizontal ? 'md:flex-row' : 'md:flex-col'
-            )}
-          >
-            <FullCalendar />
-            <div className='w-full md:w-[37.5rem] p-4 gap-3 flex flex-col'>
-              <DayInfoCard />
-              <LunarInfoCard />
-              <YearProgressCard />
-              {isHorizontal && <PlaceHolderImage />}
+      <HolidayProvider>
+        <ShareModal />
+        <div className='flex justify-center items-center p-4 w-full min-h-screen md:p-20 bg-slate-200 dark:bg-black/80'>
+          <div className='flex flex-col gap-3 max-md:w-full'>
+            <div
+              className={clsxm(
+                'flex overflow-hidden flex-col gap-2 w-full bg-white rounded-lg dark:bg-zinc-800 md:w-fit h-fit',
+                isHorizontal ? 'md:flex-row' : 'md:flex-col'
+              )}
+            >
+              <FullCalendar />
+              <div className='w-full md:w-[37.5rem] p-4 gap-3 flex flex-col'>
+                <DayInfoCard />
+                <LunarInfoCard />
+                <YearProgressCard />
+                {isHorizontal && <PlaceHolderImage />}
+              </div>
             </div>
+            <Footer />
           </div>
-          <Footer />
         </div>
-      </div>
+      </HolidayProvider>
     </GTMProvider>
   );
 }

@@ -1,0 +1,156 @@
+name: Update Holiday Data
+
+on:
+  schedule:
+    # 每年 1 月 1 日和 7 月 1 日自动运行
+    - cron: '0 0 1 1,7 *'
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-holidays:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Fetch and Update Holiday Data
+        run: |
+          # 获取当前年份和下一年
+          CURRENT_YEAR=$(date +%Y)
+          NEXT_YEAR=$((CURRENT_YEAR + 1))
+          
+          echo "Fetching holiday data for $CURRENT_YEAR and $NEXT_YEAR..."
+          
+          # 创建临时文件存储数据
+          TEMP_FILE=$(mktemp)
+          
+          # 从 API 获取数据
+          for YEAR in $CURRENT_YEAR $NEXT_YEAR; do
+            echo "Fetching $YEAR..."
+            curl -s "https://timor.tech/api/holiday/year/$YEAR" >> $TEMP_FILE
+            echo "" >> $TEMP_FILE
+          done
+          
+          # 使用 Node.js 脚本处理数据并更新文件
+          node - <<'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          
+          // 读取临时文件
+          const tempData = fs.readFileSync(process.env.TEMP_FILE || '/tmp/holidays.json', 'utf8');
+          const lines = tempData.trim().split('\n').filter(line => line);
+          
+          // 合并多年数据
+          let mergedData = {
+            holiday: {},
+            restDays: {},
+            workdays: {}
+          };
+          
+          lines.forEach(line => {
+            try {
+              const data = JSON.parse(line);
+              if (data.holiday) {
+                Object.assign(mergedData.holiday, data.holiday);
+              }
+            } catch (e) {
+              console.warn('Failed to parse line:', e.message);
+            }
+          });
+          
+          // 映射节日名称
+          const holidayMap = {
+            '元旦': 'NEW_YEARS_DAY',
+            '春节': 'SPRING_FESTIVAL',
+            '清明节': 'TOMB_SWEEPING_DAY',
+            '劳动节': 'LABOUR_DAY',
+            '端午节': 'DRAGON_BOAT_FESTIVAL',
+            '中秋节': 'MID_AUTUMN_FESTIVAL',
+            '国庆节': 'NATIONAL_DAY'
+          };
+          
+          // 生成新的 holidays.ts 内容
+          const holidaysPath = path.join(process.cwd(), 'src/configs/holidays.ts');
+          const originalContent = fs.readFileSync(holidaysPath, 'utf8');
+          
+          // 提取枚举和类型定义部分（保持不变）
+          const enumMatch = originalContent.match(/(export enum HOLIDAY[\s\S]*?}\n\n)/);
+          const interfaceMatch = originalContent.match(/(export interface HolidayDetails[\s\S]*?}\n\n)/);
+          const detailsMatch = originalContent.match(/(export const holidayDetails[\s\S]*?};\n\n)/);
+          const dayTypeMatch = originalContent.match(/(export enum DAY_TYPE[\s\S]*?}\n\n)/);
+          
+          if (!enumMatch || !interfaceMatch || !detailsMatch || !dayTypeMatch) {
+            console.error('Failed to parse holidays.ts structure');
+            process.exit(1);
+          }
+          
+          // 生成新的数据映射
+          const holidays = [];
+          const restDays = [];
+          const workdays = [];
+          
+          Object.entries(mergedData.holiday || {}).forEach(([date, name]) => {
+            const enumKey = holidayMap[name];
+            if (enumKey) {
+              holidays.push(`  ['${date}', HOLIDAY.${enumKey}],`);
+            }
+          });
+          
+          // 生成新文件内容
+          const newContent = `${enumMatch[0]}${interfaceMatch[0]}${detailsMatch[0]}${dayTypeMatch[0]}export const holidays = new Map([
+          // 自动生成的假期数据
+${holidays.join('\n')}
+          ]);
+          
+          export const restDays = new Map([
+          // 休息日数据（需要手动维护或从其他数据源获取）
+          ]);
+          
+          export const workdays = new Map([
+          // 调休工作日数据（需要手动维护或从其他数据源获取）
+          ]);
+          `;
+          
+          fs.writeFileSync(holidaysPath, newContent);
+          console.log('Holiday data updated successfully!');
+          console.log(`Updated ${holidays.length} holidays`);
+          EOF
+          
+          rm -f $TEMP_FILE
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet src/configs/holidays.ts; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: 自动更新假期数据'
+          title: '🤖 自动更新假期数据'
+          body: |
+            此 PR 由 GitHub Actions 自动生成，更新了最新的假期数据。
+            
+            **更新内容：**
+            - 从 https://timor.tech/api/holiday API 获取最新假期数据
+            - 更新 `src/configs/holidays.ts` 文件
+            
+            请检查数据是否正确后合并。
+          branch: auto-update-holidays
+          delete-branch: true

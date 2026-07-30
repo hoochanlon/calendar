@@ -147,24 +147,29 @@ const LayoutToggle = () => {
 export const Footer = () => {
   return (
     <div className='flex relative justify-between items-center h-8 md:h-10'>
-      <div className='relative flex justify-center items-center h-full px-4 py-1 overflow-hidden text-sm rounded-full cursor-default bg-slate-100 dark:bg-black/40 dark:text-zinc-200 [--slide-duration:16s]'>
-        <span className='animate-slide-up will-change-transform'>
-          光阴荏苒，日月如梭
-        </span>
-        <span className='absolute text-nowrap animate-slide-up will-change-transform [animation-delay:calc(var(--slide-duration)/2)] translate-y-full opacity-0'>
+      <div className='relative flex justify-center items-center h-full px-4 py-1 text-sm rounded-full cursor-default bg-slate-100 dark:bg-black/40 dark:text-zinc-200'>
+        <span>
           A Project By{' '}
           <a
             href='https://xym.im'
             target='_blank'
-            className='bg-gradient-to-r from-[#e68765] to-[#f0b7a3] bg-clip-text text-transparent font-bold'
+            className='bg-gradient-to-r from-[#e68765] to-[#f0b7a3] dark:from-[#ff9d7a] dark:to-[#ffc9b5] bg-clip-text text-transparent font-bold hover:opacity-80 transition-opacity'
           >
             XYXC
+          </a>
+          {' & '}
+          <a
+            href='https://github.com/hoochanlon/'
+            target='_blank'
+            className='bg-gradient-to-r from-[#e68765] to-[#f0b7a3] dark:from-[#ff9d7a] dark:to-[#ffc9b5] bg-clip-text text-transparent font-bold hover:opacity-80 transition-opacity'
+          >
+            hoochanlon
           </a>
         </span>
       </div>
       <div className='flex gap-4 px-4 py-1 rounded-full bg-slate-100 dark:bg-black/40'>
         <a
-          href='https://github.com/xyxc0673/calendar-remark'
+          href='https://github.com/hoochanlon/calendar'
           target='_blank'
           className='flex justify-center items-center rounded-lg border border-transparent transition-all duration-200 cursor-pointer size-6 md:size-8 group hover:bg-white hover:border-slate-500 dark:hover:bg-zinc-600'
         >

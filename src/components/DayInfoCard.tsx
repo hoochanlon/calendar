@@ -11,13 +11,16 @@ import { Input } from './ui';
 import { generateDay } from '@/libs/day';
 import { useTranslation } from 'react-i18next';
 import { BADGE_CONSTANTS, DAY_TYPES } from '@/configs/constant';
+import { useHoliday } from '@/contexts/HolidayContext';
 
 const EditArea = ({ date, isEditing }: { date: Date; isEditing: boolean }) => {
   const { customDay, updateCustomDay, updateBadge, updateContent } =
     useCustomDay(date);
-  const day = generateDay(date);
+  const { holidays, restDays, workdays } = useHoliday();
+  const { i18n } = useTranslation();
+  const day = generateDay(date, { holidays, restDays, workdays }, undefined, i18n.language);
   const compositionFlag = useRef(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const isChineseLocale = i18n.language.startsWith('zh');
 
   const [badgeValue, setBadgeValue] = useState<string | undefined>();

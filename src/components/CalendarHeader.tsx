@@ -8,10 +8,12 @@ import { Dropdown } from './ui';
 import { isAfter, isSameDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { holidayDetails } from '@/configs/holidays';
+import { useHoliday } from '@/contexts/HolidayContext';
 
 const CalendarHeader = () => {
   const { t, i18n } = useTranslation();
   const isChineseLocale = i18n.language.startsWith('zh');
+  const { holidays } = useHoliday();
   
   // 根据语言环境生成年份和月份列表
   const yearList = Array.from({ length: 151 }, (_, i) => ({
@@ -31,7 +33,7 @@ const CalendarHeader = () => {
   const { selectedHoliday, setSelectedHoliday } = useSelectedHoliday();
 
   // 获取假期列表并根据语言环境调整显示
-  const holidayList = getHolidays().map(holiday => ({
+  const holidayList = getHolidays(holidays).map(holiday => ({
     ...holiday,
     label: isChineseLocale 
       ? holiday.label 

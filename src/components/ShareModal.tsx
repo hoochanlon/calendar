@@ -12,10 +12,11 @@ import { Day } from '@/interfaces/day';
 import { generateDay } from '@/libs/day';
 import useSharingSettings from '@/hooks/useSharingSettings';
 import { useTranslation } from 'react-i18next';
+import { useHoliday } from '@/contexts/HolidayContext';
 
 const ShareModal = () => {
   const { isOpen, closeShareModal } = useShareModal();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     highlightToday,
     setHighlightToday,
@@ -39,6 +40,7 @@ const ShareModal = () => {
   const {
     preference: { firstDayOfWeek, showDateContent, markWeekend },
   } = usePreference();
+  const { holidays, restDays, workdays } = useHoliday();
   const [state, covertToPng, ref] = useToPng<HTMLDivElement>({
     onSuccess: (data) => {
       downloadFromBase64(data, `${headerText} - Calendar Remark.png`);
@@ -50,10 +52,10 @@ const ShareModal = () => {
 
     const dateList = generateDateList(startDate, endDate, firstDayOfWeek);
     const dayList = dateList.map((date) => {
-      return generateDay(date, [startDate, endDate]);
+      return generateDay(date, { holidays, restDays, workdays }, [startDate, endDate], i18n.language);
     });
     return dayList;
-  }, [startDate, endDate, firstDayOfWeek]);
+  }, [startDate, endDate, firstDayOfWeek, holidays, restDays, workdays, i18n.language]);
 
   const handleSave = () => {
     if (state.status !== 'loading') {
@@ -71,20 +73,20 @@ const ShareModal = () => {
       <div
         className={clsxm(
           'relative px-1 mt-2 mx-2 md:mx-4 overflow-hidden transition-all duration-200 rounded-lg p-2 text-sm md:text-base mb-2',
-          showCustomArea && 'bg-slate-100'
+          showCustomArea && 'bg-blue-50 dark:bg-blue-900/30'
         )}
       >
         <div
-          className='flex items-center cursor-pointer select-none'
+          className='flex items-center cursor-pointer select-none text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-300 transition-colors'
           onClick={() => setShowCustomArea(!showCustomArea)}
         >
           <ChevronDown
             className={clsxm(
-              'size-6 transition-all duration-200',
+              'size-6 transition-all duration-200 text-blue-600 dark:text-blue-400',
               showCustomArea && 'rotate-180'
             )}
           />
-          <div>{t('share.customization')}</div>
+          <div className='font-semibold'>{t('share.customization')}</div>
         </div>
         <div
           className={clsxm(
@@ -96,8 +98,8 @@ const ShareModal = () => {
         >
           {showCustomArea && (
             <>
-              <Divider direction='horizontal' className='my-2' />
-              <div className='flex flex-col gap-3 py-2'>
+              <Divider direction='horizontal' className='my-2 bg-blue-200 dark:bg-blue-700' />
+              <div className='flex flex-col gap-3 py-2 text-gray-900 dark:text-white'>
                 <div className='grid grid-cols-2'>
                   <div className='flex items-center gap-2'>
                     <span className='text-nowrap'>{t('share.highlightToday')}</span>
@@ -128,7 +130,7 @@ const ShareModal = () => {
                     placeholder={t('share.headerPlaceholder')}
                     maxLength={20}
                     value={headerText}
-                    className='w-full px-2 py-1 text-sm transition-all duration-200 border border-gray-300 rounded-md dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent'
+                    className='w-full px-2 py-1 text-sm transition-all duration-200 border border-gray-300 rounded-md dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed'
                     onChange={(e) => setHeaderText(e.target.value)}
                     disabled={!showHeader}
                   />
@@ -147,7 +149,7 @@ const ShareModal = () => {
                     placeholder={t('share.footerPlaceholder')}
                     maxLength={20}
                     value={footerText}
-                    className='w-full px-2 py-1 text-sm transition-all duration-200 border border-gray-300 rounded-md dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent'
+                    className='w-full px-2 py-1 text-sm transition-all duration-200 border border-gray-300 rounded-md dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed'
                     onChange={(e) => setFooterText(e.target.value)}
                     disabled={!showFooter}
                   />
@@ -183,7 +185,7 @@ const ShareModal = () => {
                 onChange={handleDateChange}
               />
             </div>
-            <div className='h-[50vh] overflow-y-auto scrollbar-track-white scrollbar-thumb-slate-300 scrollbar-thin scrollbar-thumb-rounded-full'>
+            <div className='h-[50vh] overflow-y-auto scrollbar-track-white dark:scrollbar-track-zinc-700 scrollbar-thumb-slate-300 dark:scrollbar-thumb-zinc-500 scrollbar-thin scrollbar-thumb-rounded-full'>
               <div ref={ref} className='p-2 bg-white md:p-4 dark:bg-zinc-600'>
                 <div className='bg-white dark:bg-zinc-800 w-full md:w-[37.5rem] rounded-lg md:shadow-lg shadow-slate-200 text-sm md:text-base overflow-hidden'>
                   {showHeader && (
@@ -215,16 +217,16 @@ const ShareModal = () => {
             </div>
             {renderCustomArea()}
           </div>
-          <div className='w-full h-px bg-gray-200'></div>
-          <div className='flex justify-end gap-4 px-6 py-4'>
+          <div className='w-full h-px bg-gray-300 dark:bg-zinc-500'></div>
+          <div className='flex justify-end gap-4 px-6 py-4 bg-gray-50 dark:bg-zinc-700'>
             <button
-              className='px-3 py-1 text-sm text-white transition-all duration-200 bg-red-500 rounded-md hover:bg-red-600 md:text-base'
+              className='px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-red-500 rounded-md hover:bg-red-600 active:bg-red-700 shadow-sm hover:shadow-md md:text-base'
               onClick={handleClose}
             >
               {t('common.close')}
             </button>
             <button
-              className='px-3 py-1 text-sm text-white transition-all duration-200 bg-blue-500 rounded-md hover:bg-blue-600 md:text-base'
+              className='px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-blue-600 rounded-md hover:bg-blue-700 active:bg-blue-800 shadow-sm hover:shadow-md md:text-base'
               onClick={() => handleSave()}
             >
               {t('share.download')}

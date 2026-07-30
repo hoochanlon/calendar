@@ -4,6 +4,7 @@ import { usePreference } from './usePreference';
 import { generateDateList } from '@/libs/date';
 import { generateDay } from '@/libs/day';
 import { useTranslation } from 'react-i18next';
+import { useHoliday } from '@/contexts/HolidayContext';
 
 export const todayAtom = atom(new Date());
 export const currentMonthAtom = atom(new Date().getMonth());
@@ -18,6 +19,7 @@ const useCalendar = () => {
   } = usePreference();
   const { i18n } = useTranslation();
   const languageKey = i18n.language.startsWith('zh') ? 'zh' : 'en';
+  const { holidays, restDays, workdays } = useHoliday();
 
   const handlePreviousMonth = () => {
     if (currentMonth === 0) {
@@ -65,11 +67,11 @@ const useCalendar = () => {
     );
 
     const dayList = dateList.map((date) => {
-      return generateDay(date, [startDateTime, endDateTime]);
+      return generateDay(date, { holidays, restDays, workdays }, [startDateTime, endDateTime], languageKey);
     });
 
     return dayList;
-  }, [currentMonth, currentYear, firstDayOfWeek, languageKey]);
+  }, [currentMonth, currentYear, firstDayOfWeek, languageKey, holidays, restDays, workdays]);
 
   return {
     today,

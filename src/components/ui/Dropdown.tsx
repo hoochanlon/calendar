@@ -129,16 +129,16 @@ const Dropdown = <T extends DefaultOptionType>({
       >
         <div
           ref={triggerRef}
-          className='flex items-center md:py-1 py-0.5 pl-1.5 pr-0.5 md:pl-3 md:pr-1 transition-colors duration-200 bg-white border border-transparent rounded cursor-pointer dark:bg-zinc-200 hover:border-gray-600 dark:hover:border-gray-200'
+          className='flex items-center md:py-1 py-0.5 pl-1.5 pr-0.5 md:pl-3 md:pr-1 transition-colors duration-200 bg-white border border-transparent rounded cursor-pointer dark:bg-zinc-700 dark:text-zinc-100 hover:border-gray-600 dark:hover:border-zinc-400'
           onClick={handleToggle}
           onMouseEnter={handleMouseEnter}
         >
-          <span className='text-sm md:text-base'>
+          <span className='text-sm md:text-base font-medium'>
             {currentItem ? currentItem.label : placeholder}
           </span>
           <ChevronDown
             className={clsxm(
-              'w-4 h-4 md:w-6 md:h-6 ml-1 text-gray-500 transition-transform duration-200',
+              'w-4 h-4 md:w-6 md:h-6 ml-1 text-gray-500 dark:text-zinc-300 transition-transform duration-200',
               active && 'rotate-180'
             )}
           />
@@ -161,7 +161,7 @@ const Dropdown = <T extends DefaultOptionType>({
           <div
             ref={listRef}
             className={clsxm(
-                'fixed z-[9999] flex flex-col w-fit gap-1 p-1 overflow-hidden overflow-y-auto bg-white dark:bg-zinc-200 rounded shadow max-h-60 md:max-h-96 shadow-slate-200 scrollbar-track-white scrollbar-thumb-slate-300 scrollbar-thin scrollbar-thumb-rounded-full transition-all duration-300 ease-out',
+                'fixed z-[9999] flex flex-col w-fit gap-1 p-1 overflow-hidden overflow-y-auto bg-white dark:bg-zinc-800 rounded shadow-lg max-h-60 md:max-h-96 dark:shadow-black/50 scrollbar-track-white dark:scrollbar-track-zinc-700 scrollbar-thumb-slate-300 dark:scrollbar-thumb-zinc-500 scrollbar-thin scrollbar-thumb-rounded-full transition-all duration-300 ease-out',
                 showAnimation ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               )}
             style={{
@@ -177,9 +177,9 @@ const Dropdown = <T extends DefaultOptionType>({
               ref={(el) => refs.current.set(option, el)}
               key={option.value}
               className={clsxm(
-                'text-zinc-500 opacity-80 hover:opacity-100 whitespace-nowrap hover:text-slate-900 inline-block w-full px-3 py-1 text-center border border-transparent rounded cursor-pointer hover:border-gray-600 transition-all duration-200 text-sm md:text-base',
+                'text-zinc-600 dark:text-zinc-300 opacity-80 hover:opacity-100 whitespace-nowrap hover:text-slate-900 dark:hover:text-white inline-block w-full px-3 py-1 text-center border border-transparent rounded cursor-pointer hover:border-gray-600 dark:hover:border-zinc-400 transition-all duration-200 text-sm md:text-base',
                 option.value === value &&
-                  'bg-slate-200 opacity-100 text-slate-900 dark:bg-zinc-300 dark:text-slate-900'
+                  'bg-slate-200 dark:bg-zinc-600 opacity-100 text-slate-900 dark:text-white font-medium'
               )}
               onClick={() => handleChange(option)}
             >

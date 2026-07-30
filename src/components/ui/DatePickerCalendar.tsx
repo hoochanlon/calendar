@@ -26,7 +26,7 @@ function DatePickerCalendar({
         nav: 'space-x-1 flex items-center',
         nav_button: clsxm(
           buttonVariants({ variant: 'outline' }),
-          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+          'h-7 w-7 bg-transparent p-0 hover:bg-slate-100 dark:hover:bg-zinc-700 border-gray-300 dark:border-zinc-600 transition-all'
         ),
         nav_button_previous: 'absolute left-1',
         nav_button_next: 'absolute right-1',
@@ -53,8 +53,8 @@ function DatePickerCalendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <ChevronLeft className='size-4' />,
-        IconRight: () => <ChevronRight className='size-4' />,
+        IconLeft: () => <ChevronLeft className='size-4 text-gray-700 dark:text-zinc-200' />,
+        IconRight: () => <ChevronRight className='size-4 text-gray-700 dark:text-zinc-200' />,
       }}
       {...props}
     />

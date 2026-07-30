@@ -49,6 +49,7 @@ const plugins = [react(), VitePWA(pwaOptions), gzipPlugin(), checker({
 
 export default defineConfig({
   plugins: plugins,
+  base: process.env.NODE_ENV === 'production' ? '/calendar/' : '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')

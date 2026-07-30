@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { HolidayDetails, holidayDetails, holidays } from '@/configs/holidays';
+import { HolidayDetails, holidayDetails, HOLIDAY } from '@/configs/holidays';
 
 type NearestHoliday = {
   date: Date;
@@ -8,7 +8,7 @@ type NearestHoliday = {
   distanceOfDays: number;
 };
 
-const useNextHoliday = (date: Date): NearestHoliday | undefined => {
+const useNextHoliday = (date: Date, holidays: Map<string, HOLIDAY>): NearestHoliday | undefined => {
   const [nextHoliday, setNextHoliday] = useState<NearestHoliday>();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const useNextHoliday = (date: Date): NearestHoliday | undefined => {
         break;
       }
     }
-  }, [date]);
+  }, [date, holidays]);
 
   return nextHoliday;
 };
