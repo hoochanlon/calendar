@@ -2,6 +2,8 @@
 
 > [!important]
 > 一款专注于中国节假日的现代化日历应用，支持标记日期、生成分享图、查看农历和节气信息。本项目基于 [calendar-remark](https://github.com/xyxc0673/calendar-remark) 进行了大量优化和功能增强。
+> 
+> **注意**：本项目不再接收上游仓库的合并，作为独立项目维护和发展。
 
 ## 📱 在线预览
 
@@ -144,10 +146,5 @@ calendar/
 
 MIT License
 
-## 🙏 致谢
 
-本项目基于 [xyxc0673/calendar-remark](https://github.com/xyxc0673/calendar-remark) 进行二次开发和优化。
 
----
-
-**注意**：本项目不再接收上游仓库的合并，作为独立项目维护和发展。
