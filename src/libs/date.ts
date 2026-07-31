@@ -75,11 +75,21 @@ export type HolidaySelect = {
 };
 
 export const getHolidays = (holidays: Map<string, HOLIDAY>): HolidaySelect[] => {
-  const result = Array.from(holidays).map(([date, item]) => ({
-    value: item,
-    label: holidayDetails[item].chinese,
+  // 使用 Map 来去重，key 为假期类型，value 为该假期的第一个日期
+  const uniqueHolidays = new Map<HOLIDAY, string>();
+  
+  Array.from(holidays).forEach(([date, holiday]) => {
+    if (!uniqueHolidays.has(holiday)) {
+      uniqueHolidays.set(holiday, date);
+    }
+  });
+  
+  const result = Array.from(uniqueHolidays).map(([holiday, date]) => ({
+    value: holiday,
+    label: holidayDetails[holiday].chinese,
     date: date,
   }));
+  
   return result;
 };
 
