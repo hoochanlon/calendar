@@ -241,7 +241,7 @@ const ShareModal = () => {
                   {showFooter && (
                     <div className='flex items-center justify-center w-full gap-1 px-1 py-2 text-sm md:gap-2 md:px-2 md:py-4 bg-slate-100 dark:bg-zinc-900/20 md:text-base dark:text-zinc-200'>
                       <img
-                        src='/favicon.svg'
+                        src={import.meta.env.BASE_URL + 'favicon.svg'}
                         className='w-4 h-4 md:w-6 md:h-6'
                       />
                       <span>{footerText}</span>
