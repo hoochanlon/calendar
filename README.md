@@ -1,60 +1,153 @@
-# Calendar Remark
+# 中国法定节假日及传统节庆日历
 
-[简体中文](./README-zh_CN.md)
+> [!important]
+> 一款专注于中国节假日的现代化日历应用，支持标记日期、生成分享图、查看农历和节气信息。本项目基于 [calendar-remark](https://github.com/xyxc0673/calendar-remark) 进行了大量优化和功能增强。
 
-A simple calendar with nice design for remarking a date.
+## 📱 在线预览
 
-[Online Demo](https://calendar.xym.im/)
+[https://hoochanlon.github.io/calendar/](https://hoochanlon.github.io/calendar/)
 
-## Screenshots
+## ✨ 核心特性
 
-![Screenshot-1](./screenshots/screenshot-1.jpeg)
+### 🎊 节假日系统
+- **完整的中国节假日数据**：支持 2025-2026 年法定节假日
+- **智能假期标识**：自动标注休息日、调休工作日
+- **假期倒计时**：实时显示距离下一个假期的天数
+- **节假日安排卡片**：详细展示假期安排和调休信息
 
-<details>
-  <summary>Click here to show/hide more screenshots</summary>
-  <img src="./screenshots/screenshot-2.jpeg" />
-  <img src="./screenshots/screenshot-3.jpeg" />
-</details>
+### 🌙 农历与传统文化
+- **农历信息**：显示农历日期、天干地支
+- **二十四节气**：准确标注节气时间
+- **传统节日**：标注传统节庆日
 
-## Features
+### 🎨 现代化设计
+- **暗色模式**：完整的夜间模式支持，所有组件深度优化
+- **响应式设计**：完美适配手机、平板、桌面设备
+- **精致交互**：流畅的动画效果和悬停反馈
+- **高对比度**：优化的颜色方案，确保在各种模式下清晰可读
 
-- [x] Custom remark to a date
-- [x] Lunar calendar
-- [x] Holiday and Festival
-- [x] Year progress
-- [x] Dark mode
-- [x] Responsive design
+### 📤 分享功能
+- **自定义分享图**：支持自定义日期范围、标题、页脚
+- **多项配置**：高亮今日、补全周、显示农历等选项
+- **一键下载**：生成高质量 PNG 图片
 
-## Tech Stack
+### 🌍 国际化
+- **双语支持**：简体中文 / English
+- **智能语言检测**：自动根据浏览器语言切换
+- **完整翻译**：界面、节假日名称全面国际化
 
-- [x] React
-- [x] TypeScript
-- [x] Tailwind CSS
-- [x] Vite
-- [x] Jotai
+### ⚡ 性能与体验
+- **PWA 支持**：可安装到桌面，离线访问
+- **快速加载**：优化的构建配置
+- **年进度显示**：直观展示全年时间进度
 
-## Development
+## 🆚 相比原版的主要优化
+
+### 架构优化
+- ✅ **模块化节假日系统**：重构为独立的 Context + Service 架构
+- ✅ **类型安全增强**：完善的 TypeScript 类型定义
+- ✅ **状态管理优化**：使用 Jotai 实现更清晰的状态流
+- ✅ **代码组织**：拆分大型组件，提升可维护性
+
+### 功能增强
+- ✅ **完整的节假日数据**：2025-2026 年法定节假日全覆盖
+- ✅ **国际化支持**：集成 i18next，支持中英双语
+- ✅ **暗色模式深度优化**：所有组件（下拉框、按钮、输入框等）完整适配
+- ✅ **假期安排卡片**：新增详细的节假日安排展示
+- ✅ **自动化工作流**：GitHub Actions 自动更新节假日数据
+
+### UI/UX 改进
+- ✅ **高对比度配色**：优化暗色模式下的可读性
+- ✅ **交互反馈增强**：更明确的悬停效果和视觉反馈
+- ✅ **组件视觉优化**：按钮、下拉框、输入框等所有交互元素重新设计
+- ✅ **分享功能改进**：更直观的自定义选项和预览
+
+### 开发体验
+- ✅ **CI/CD 优化**：修复 pnpm 版本兼容问题
+- ✅ **构建优化**：更快的开发服务器和生产构建
+
+## 🛠️ 技术栈
+
+- **框架**：React 18 + TypeScript
+- **构建工具**：Vite 5
+- **状态管理**：Jotai
+- **样式方案**：Tailwind CSS 3
+- **国际化**：i18next + react-i18next
+- **日期处理**：date-fns + dayjs
+- **农历计算**：lunar-typescript
+- **PWA**：vite-plugin-pwa
+
+## 📦 开发
 
 ```bash
-# install dependencies
-$ pnpm install
+# 安装依赖
+pnpm install
 
-# serve with hot reload at localhost:5173
-$ pnpm dev
+# 启动开发服务器
+pnpm dev
 
-# build for production and launch server
-$ pnpm build
-$ pnpm start
+# 构建生产版本
+pnpm build
+
+# 预览生产构建
+pnpm preview
+
+# 代码检查
+pnpm lint
+
+# 运行测试
+pnpm test
 ```
 
-## Deploy
+## 🚀 部署
 
-Calendar Remark can be deployed to any static site hosting service, such as [Vercel](https://vercel.com/), [Netlify](https://www.netlify.com/), [Cloudflare Pages](https://pages.cloudflare.com/), [GitHub Pages](https://pages.github.com/), etc.
+项目支持部署到任何静态网站托管服务：
 
-### Deploy with Vercel
+- **GitHub Pages**：已配置自动部署工作流
+- **Vercel**：一键导入仓库即可部署
+- **Netlify**：拖拽 `dist` 文件夹或连接 Git 仓库
+- **Cloudflare Pages**：连接仓库自动构建
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxyxc0673%2Fcalendar-remark)
+### 环境要求
+- Node.js 18+
+- pnpm 9+
 
-## License
+## 📝 项目结构
 
-MIT
+```
+calendar/
+├── src/
+│   ├── assets/          # 静态资源、图标
+│   ├── components/      # React 组件
+│   │   ├── ui/         # 通用 UI 组件
+│   │   └── ...         # 业务组件
+│   ├── configs/        # 配置文件（节假日数据等）
+│   ├── contexts/       # React Context
+│   ├── hooks/          # 自定义 Hooks
+│   ├── i18n/           # 国际化配置和翻译
+│   ├── interfaces/     # TypeScript 类型定义
+│   ├── libs/           # 工具函数库
+│   ├── services/       # 业务逻辑服务
+│   ├── stores/         # Jotai 状态存储
+│   ├── styles/         # 全局样式
+│   └── views/          # 页面级组件
+├── .github/
+│   └── workflows/      # GitHub Actions 工作流
+└── public/             # 公共资源
+```
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
+
+MIT License
+
+## 🙏 致谢
+
+本项目基于 [xyxc0673/calendar-remark](https://github.com/xyxc0673/calendar-remark) 进行二次开发和优化。
+
+---
+
+**注意**：本项目不再接收上游仓库的合并，作为独立项目维护和发展。
