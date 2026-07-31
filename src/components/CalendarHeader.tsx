@@ -16,7 +16,7 @@ const CalendarHeader = () => {
   const { holidays } = useHoliday();
   
   // 根据语言环境生成年份和月份列表
-  const yearList = Array.from({ length: 301 }, (_, i) => ({
+  const yearList = Array.from({ length: 201 }, (_, i) => ({
     value: i + 1900,
     label: isChineseLocale ? `${i + 1900}年` : `${i + 1900}`,
   }));

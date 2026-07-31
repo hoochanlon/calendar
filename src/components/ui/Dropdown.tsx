@@ -13,6 +13,7 @@ type DropdownProps<T extends DefaultOptionType> = {
   value?: T['value'];
   className?: string;
   placeholder?: string;
+  editable?: boolean;
   onChange: (item: T) => void;
 };
 
@@ -21,13 +22,16 @@ const Dropdown = <T extends DefaultOptionType>({
   value,
   className,
   placeholder,
+  editable = false,
   onChange,
 }: DropdownProps<T>) => {
   const [active, setActive] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [inputValue, setInputValue] = useState('');
   const triggerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const refs = useRef(new Map<T, HTMLSpanElement | null>());
   const currentItem = options.find((item) => item.value === value);
@@ -101,6 +105,47 @@ const Dropdown = <T extends DefaultOptionType>({
   const handleChange = (value: T) => {
     onChange(value);
     setActive(false);
+    if (editable) {
+      setInputValue('');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInputValue(val);
+    
+    // 尝试查找匹配的选项
+    const numVal = Number(val);
+    if (!isNaN(numVal)) {
+      const matchedItem = options.find(opt => opt.value === numVal);
+      if (matchedItem) {
+        onChange(matchedItem);
+      }
+    }
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const numVal = Number(inputValue);
+      if (!isNaN(numVal)) {
+        const matchedItem = options.find(opt => opt.value === numVal);
+        if (matchedItem) {
+          onChange(matchedItem);
+          setInputValue('');
+          setActive(false);
+        }
+      }
+    } else if (e.key === 'Escape') {
+      setInputValue('');
+      setActive(false);
+    }
+  };
+
+  const handleInputClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!active) {
+      setActive(true);
+    }
   };
 
   const handleToggle = () => {
@@ -108,13 +153,6 @@ const Dropdown = <T extends DefaultOptionType>({
       updatePosition();
     }
     setActive(!active);
-  };
-
-  const handleMouseEnter = () => {
-    if (!active) {
-      updatePosition();
-    }
-    setActive(true);
   };
 
   const handleMouseLeave = () => {
@@ -130,12 +168,24 @@ const Dropdown = <T extends DefaultOptionType>({
         <div
           ref={triggerRef}
           className='flex items-center md:py-1 py-0.5 pl-1.5 pr-0.5 md:pl-3 md:pr-1 transition-colors duration-200 bg-white border border-transparent rounded cursor-pointer dark:bg-zinc-700 dark:text-zinc-100 hover:border-gray-600 dark:hover:border-zinc-400'
-          onClick={handleToggle}
-          onMouseEnter={handleMouseEnter}
+          onClick={editable ? undefined : handleToggle}
         >
-          <span className='text-sm md:text-base font-medium'>
-            {currentItem ? currentItem.label : placeholder}
-          </span>
+          {editable ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputValue || (currentItem ? String(currentItem.label) : '')}
+              onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
+              onClick={handleInputClick}
+              placeholder={placeholder}
+              className='w-full text-sm md:text-base font-medium bg-transparent outline-none dark:text-zinc-100'
+            />
+          ) : (
+            <span className='text-sm md:text-base font-medium'>
+              {currentItem ? currentItem.label : placeholder}
+            </span>
+          )}
           <ChevronDown
             className={clsxm(
               'w-4 h-4 md:w-6 md:h-6 ml-1 text-gray-500 dark:text-zinc-300 transition-transform duration-200',
@@ -155,7 +205,6 @@ const Dropdown = <T extends DefaultOptionType>({
               width: `${position.width}px`,
               height: '4px',
             }}
-            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
           <div
@@ -169,7 +218,6 @@ const Dropdown = <T extends DefaultOptionType>({
               left: `${position.left}px`,
               minWidth: `${position.width}px`,
             }}
-            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
           {options.map((option) => (
