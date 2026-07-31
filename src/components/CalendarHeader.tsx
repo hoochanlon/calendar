@@ -4,7 +4,7 @@ import { useSelectedDate } from '@/hooks/useSelectedDate';
 import { useSelectedHoliday } from '@/hooks/useSelectedHoliday';
 import clsxm from '@/libs/clsxm';
 import { HolidaySelect, getHolidays } from '@/libs/date';
-import { Dropdown } from './ui';
+import { Dropdown, YearSearchInput } from './ui';
 import { isAfter, isSameDay } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { holidayDetails } from '@/configs/holidays';
@@ -14,12 +14,6 @@ const CalendarHeader = () => {
   const { t, i18n } = useTranslation();
   const isChineseLocale = i18n.language.startsWith('zh');
   const { holidays } = useHoliday();
-  
-  // 根据语言环境生成年份和月份列表
-  const yearList = Array.from({ length: 201 }, (_, i) => ({
-    value: i + 1900,
-    label: isChineseLocale ? `${i + 1900}年` : `${i + 1900}`,
-  }));
   
   const monthList = Array.from({ length: 12 }, (_, i) => ({
     value: i + 1,
@@ -82,10 +76,11 @@ const CalendarHeader = () => {
         className='absolute left-3 min-w-9'
         onChange={navigateToHoliday}
       />
-      <Dropdown
-        options={yearList}
+      <YearSearchInput
         value={currentYear}
-        onChange={(item) => setCurrentYear(item.value)}
+        onChange={setCurrentYear}
+        minYear={1900}
+        maxYear={2200}
       />
       <Dropdown
         options={monthList}

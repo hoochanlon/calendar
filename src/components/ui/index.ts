@@ -4,6 +4,7 @@ export { default as Dropdown } from './Dropdown';
 export { default as RadioButtonGroup } from './Radio';
 export { default as Divider } from './Divider';
 export { default as InfoCard } from './InfoCard';
+export { default as YearSearchInput } from './YearSearchInput';
 export { Button, buttonVariants } from './Button';
 export { DatePickerCalendar } from './DatePickerCalendar';
 export { Popover, PopoverTrigger, PopoverContent } from './Popover';
