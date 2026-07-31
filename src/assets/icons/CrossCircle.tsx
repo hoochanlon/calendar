@@ -1,6 +1,6 @@
 import { SVGProps } from 'react';
 
-export const CrossCircle = (props: SVGProps<SVGSVGElement>) => {
+export function CrossCircle(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -19,4 +19,4 @@ export const CrossCircle = (props: SVGProps<SVGSVGElement>) => {
       />
     </svg>
   );
-};
+}
